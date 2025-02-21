@@ -1,0 +1,28 @@
+name: Deploy WordPress Plugin
+
+on:
+  push:
+    branches:
+      - main  # Change to your release branch if needed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Zip Plugin
+        run: zip -r plugin.zip your-plugin-folder  # Change to your actual plugin folder name
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: plugin.zip
+          tag_name: v1.${{ github.run_number }}  # Auto-increment version number
+          release_name: Release v1.${{ github.run_number }}
+          body: "Automated release for version v1.${{ github.run_number }}"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
